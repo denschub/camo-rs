@@ -15,6 +15,14 @@ async fn main() {
     tracing_subscriber::fmt::init();
     let settings = Settings::parse();
 
+    if !(settings.allow_audio || settings.allow_image || settings.allow_video) {
+        println!(
+            "ERROR: The configuration does not allow any content-type, and it \
+            would block all requests. This isn't useful. Exiting."
+        );
+        std::process::exit(1);
+    }
+
     let listen_addr = SocketAddr::from_str(&settings.listen).unwrap();
     let server = server::build(settings);
     axum::Server::bind(&listen_addr)
