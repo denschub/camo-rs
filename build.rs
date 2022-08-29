@@ -10,7 +10,9 @@ fn main() {
         .output()
     {
         if let Ok(git_str_parse) = String::from_utf8(output.stdout) {
-            git_hash = git_str_parse.trim().to_string();
+            if !git_str_parse.is_empty() {
+                git_hash = git_str_parse.trim().to_string();
+            }
         }
     }
 
