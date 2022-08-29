@@ -44,6 +44,7 @@ services:
     environment:
       - CAMO_KEY=supersecretkey
       - CAMO_ROOT_URL=https://example.com/camo/
+      - CAMO_ALLOW_IMAGE=yes
     ports:
       - 8081:8081
 ```

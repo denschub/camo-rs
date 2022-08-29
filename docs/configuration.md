@@ -14,7 +14,7 @@ CLI options and environment vars are equal in their usage. If both a CLI flag an
 | `--root-url`         | `CAMO_ROOT_URL`         | The full URL, including a trailing slash, where this instance will be reachable. | unset                                                        |
 | `--upstream-timeout` | `CAMO_UPSTREAM_TIMEOUT` | The number of seconds to wait for an upstream response.                          | `10`                                                         |
 
-`CAMO_KEY` and `CAMO_ROOT_URL` are required. All other settings are optional.
+`CAMO_KEY` and `CAMO_ROOT_URL` are required. At least one `content-type` needs to be allowed, or Camo will refuse to start. All other settings are optional.
 
 ## Logging
 

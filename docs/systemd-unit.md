@@ -16,3 +16,11 @@ WantedBy=multi-user.target
 ```
 
 Replace the binary location, and the location of the `EnvironmentFile` as needed. For all available and required environment variables, check [the documentation about configuring `camo-rs`](/docs/configuration.md).
+
+A `/etc/camo` file could look like this:
+
+```
+CAMO_KEY=supersecretkey
+CAMO_ROOT_URL=https://example.com/camo/
+CAMO_ALLOW_IMAGE=yes
+```
