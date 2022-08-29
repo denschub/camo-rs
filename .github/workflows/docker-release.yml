@@ -1,0 +1,32 @@
+name: docker-release
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Split tag name into semver-compatible subsections
+        id: version_numbers
+        run: |
+          echo ::set-output name=patch::$(echo $GITHUB_REF | sed 's=refs/tags/v==g')
+          echo ::set-output name=minor::$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1,2)
+          echo ::set-output name=major::$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1)
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: |
+            denschub/camo-rs:latest,
+            denschub/camo-rs:${{ steps.version_numbers.outputs.patch }},
+            denschub/camo-rs:${{ steps.version_numbers.outputs.minor }},
+            denschub/camo-rs:${{ steps.version_numbers.outputs.major }}

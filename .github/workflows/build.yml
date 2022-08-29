@@ -1,0 +1,29 @@
+name: build
+
+on:
+  push:
+    branches:
+      - develop
+      - release
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Build release artifacts
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: --locked --path . --root ./out
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: camo-linux-amd64
+          path: out/bin/camo
