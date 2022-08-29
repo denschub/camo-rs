@@ -31,7 +31,7 @@ There are some differences to the original projects, namely:
 
 Camo allows users to proxy essentially arbitrary files through it. If your application is vulnerable, Camo could be used to bypass cross-origin boundaries for assets. To reduce the risk a bit, `camo-rs` will always set the following headers in all of its proxied responses:
 
-- `content-security-policy: default-src 'none'; img-src data:`
+- `content-security-policy: default-src 'none'; img-src data:; style-src 'unsafe-inline'`
 - `x-content-type-options: nosniff`
 - `x-frame-options: deny`
 - `x-xss-protection: 1; mode=block`
