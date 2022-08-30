@@ -11,7 +11,7 @@ Note that this project is **not considered production-ready yet**. A version `1.
 To prevent abuse, only authorized URLs can be proxied through Camo. URLs requested from the application need to have the following format:
 
 ```
-https://camo.example.org/<digst>/<asset-url>
+https://camo.example.org/<digest>/<asset-url>
 ```
 
 Where
