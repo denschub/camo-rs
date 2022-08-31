@@ -85,7 +85,7 @@ async fn proxy_handler(
                 )
             }
             CamoError::UpstreamRedirectLocationUnprocessable => {
-                warn!("Upstream returned redirect, but the locationc ould not be processed");
+                warn!("Upstream returned redirect, but the location could not be processed");
                 get_response_with_status_and_text(
                     422,
                     "Upstream returned redirect with unprocessable location!",
