@@ -47,7 +47,7 @@ pub fn build(settings: Settings) -> Router<AppState> {
 /// The handler for all GET/HEAD/OPTION requests to a URL in the right format.
 /// This is a wrapper around `process_camo_request` to allow for reasonable
 /// HTTP responses depending on what goes wrong.
-#[instrument(skip(app_state, req_headers), fields(target_url))]
+#[instrument(level = "warn", skip(app_state, req_headers), fields(target_url))]
 async fn proxy_handler(
     State(app_state): State<AppState>,
     Path((req_digest, req_target)): Path<(String, String)>,
