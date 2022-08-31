@@ -69,11 +69,11 @@ async fn rejects_invalid_targets() {
 }
 
 #[tokio::test]
-async fn rejects_unexpected_status_codes() {
+async fn rejects_but_forwards_unexpected_status_codes() {
     let upstream = get_single_file_mock(418).await;
     let resp = run_valid_upstream_request(&upstream).await.unwrap();
 
-    assert_eq!(resp.status(), 502);
+    assert_eq!(resp.status(), 418);
 }
 
 #[tokio::test]

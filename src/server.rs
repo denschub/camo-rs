@@ -77,11 +77,11 @@ async fn proxy_handler(
                 warn!("Upstream proxy error: {:?}", err);
                 get_response_with_status_and_text(502, "Upstream connection failed!")
             }
-            CamoError::UnexpectedUpstreamStatus(err) => {
+            CamoError::UnexpectedUpstreamStatus(status_code) => {
                 warn!("Unexpected upstream status: {:?}", err);
                 get_response_with_status_and_text(
-                    502,
-                    &format!("Unexpected upstream status: {}!", err),
+                    status_code,
+                    &format!("Unexpected upstream status: {}!", status_code),
                 )
             }
             CamoError::UpstreamRedirectLocationUnprocessable => {

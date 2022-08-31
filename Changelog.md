@@ -1,6 +1,7 @@
 # 1.0.0-dev
 
 - `camo-rs` now refuses to start if no content-types are allowed. Before that, Camo would start up just fine, but reject everything, which can be confusing.
+- When receiving a status code outside the expected range (`[200..399]`), Camo will still reject that request, but will pass the upstream status code to the client.
 
 # 0.1.0
 
