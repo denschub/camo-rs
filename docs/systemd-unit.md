@@ -21,6 +21,6 @@ A `/etc/camo` file could look like this:
 
 ```
 CAMO_KEY=supersecretkey
-CAMO_ROOT_URL=https://example.com/camo/
+CAMO_ROOT_URL=/
 CAMO_ALLOW_IMAGE=yes
 ```

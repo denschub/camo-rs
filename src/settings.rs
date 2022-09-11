@@ -40,8 +40,10 @@ pub struct Settings {
     #[clap(long = "listen", env = "CAMO_LISTEN", default_value = "[::]:8081")]
     pub listen: String,
 
-    /// Full URL this Camo is running on, including a trailing slash. For
-    /// example: `https://example.com/camo/`
+    /// URL, including a trailing slash, relative to the domain Camo is running
+    /// on. For example, if Camo is available on `example.com/camo/`, set this
+    /// to `/camo/`. For installations that do not run in a subdirectory, set
+    /// this to `/`.
     #[clap(long = "root-url", env = "CAMO_ROOT_URL")]
     pub root_url: String,
 
