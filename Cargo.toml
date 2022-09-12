@@ -9,7 +9,7 @@ edition = "2021"
 default-run = "camo"
 
 [dependencies]
-axum = "0.6.0-rc.1"
+axum = "0.6.0-rc.2"
 clap = { version = "3", features = ["cargo", "derive", "env", "wrap_help"] }
 hex = "0.4"
 hmac = "0.12"
