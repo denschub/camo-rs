@@ -1,5 +1,43 @@
 //! The Application Settings Module(tm)
 
+use tracing::Level;
+
+/// Specifies the log's output format
+#[derive(clap::ValueEnum, Clone, Debug)]
+pub enum LogFormat {
+    /// Logs in a human-readable format.
+    Text,
+
+    /// Logs in a human-readable format, but with colors.
+    TextColor,
+
+    /// Logs into a machine-readable JSONL format.
+    Json,
+}
+
+/// Specifies how much log output Camo generates
+#[derive(clap::ValueEnum, Clone, Debug)]
+pub enum LogLevel {
+    /// Does not log anything at all
+    Quiet,
+
+    /// Logs upstream errors and blcoked upstream requests
+    Warn,
+
+    /// Everything that `warn` includes, but also logs invalid URLs/HMACs
+    Info,
+}
+
+impl LogLevel {
+    pub fn tracing_level(&self) -> Level {
+        match self {
+            LogLevel::Quiet => Level::ERROR,
+            LogLevel::Warn => Level::WARN,
+            LogLevel::Info => Level::INFO,
+        }
+    }
+}
+
 /// Application Settings Struct, designed to be primarily used by Clap
 #[derive(clap::Parser, Clone, Debug)]
 #[clap(about, author, version = env!("CAMO_RS_VERSION"))]
@@ -40,8 +78,18 @@ pub struct Settings {
     #[clap(long = "listen", env = "CAMO_LISTEN", default_value = "[::]:8081")]
     pub listen: String,
 
+    /// Defines how the log output will be formatted
+    #[clap(value_enum, long = "log-format", env = "CAMO_LOG_FORMAT", default_value_t = LogFormat::TextColor)]
+    pub log_format: LogFormat,
+
+    /// The amount of log output. See the documentation for details
+    #[clap(value_enum, long = "log-level", env = "CAMO_LOG_LEVEL", default_value_t = LogLevel::Quiet)]
+    pub log_level: LogLevel,
+
     /// URL, including a trailing slash, relative to the domain Camo is running
-    /// on. For example, if Camo is available on `example.com/camo/`, set this
+    /// on
+    ///
+    /// For example, if Camo is available on `example.com/camo/`, set this
     /// to `/camo/`. For installations that do not run in a subdirectory, set
     /// this to `/`.
     #[clap(long = "root-url", env = "CAMO_ROOT_URL")]

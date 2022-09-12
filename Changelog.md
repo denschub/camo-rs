@@ -1,5 +1,7 @@
 # 1.0.0-dev
 
+- You can now set the log output level with `--log-level`/`CAMO_LOG_LEVEL`, and the log output format with `--log-format`/`CAMO_LOG_FORMAT`. Please see [the documentation](/docs/configuration.md) for full details!
+
 # 0.2.0
 
 - `camo-rs` now refuses to start if no content-types are allowed. Before that, Camo would start up just fine, but reject everything, which can be confusing.

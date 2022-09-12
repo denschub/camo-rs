@@ -24,7 +24,20 @@ At least one `content-type` needs to be allowed, or Camo will refuse to start.
 
 ## Logging
 
-By default, `camo-rs` is very quiet. It will only ever say anything if something goes wrong. You can enable some optional logs with a `RUST_LOG` environment var:
+By default, `camo-rs` is very quiet. It will only ever say anything if something goes wrong. Optional logging is available.
 
-- `RUST_LOG=warn` will log when a valid request (i.e. valid URL and valid HMAC) could not be processed, for example due to an upstream failure or a rejected content type.
-- `RUST_LOG=info` will, in addition, also log any attempts with an invalid Camo URL or invalid HMACs. This can be useful for debugging a fresh setup.
+### Log levels
+
+The `--log-level` flag or `CAMO_LOG_LEVEL` env var can have the following values:
+
+- `quiet` - Doesn't log anything at all, unless something unexpected goes wrong. This is the default.
+- `warn` - Logs when valid requests couldn't be processed due to upstream errors, or if requests have been blocked by length limits or content-type restrictions.
+- `info` - Logs the same was `warn`, but additionally logs when the request field encoding was wrong, or if the HMAC was invalid.
+
+### Log formats
+
+The `--log-format` flag or `CAMO_LOG_FORMAT` env var can be set to:
+
+- `text` - Does log the information in a human-readable format.
+- `text-color` - The same as `text`, but with some color added to improve readability. This is the default.
+- `json` - Logs the data in a machine-readable JSON format, with one log entry per line.

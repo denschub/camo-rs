@@ -15,6 +15,8 @@ pub mod application {
             header_via: "camo-rs".to_owned(),
             key: "camo-rs".to_owned(),
             upstream_timeout: 10,
+            log_format: camo_rs::settings::LogFormat::Text,
+            log_level: camo_rs::settings::LogLevel::Quiet,
 
             // the test harness will always generate empty bodies, so any body
             // length that's there can be used to test the too-long checks.
