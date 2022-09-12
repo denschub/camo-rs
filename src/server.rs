@@ -47,13 +47,21 @@ pub fn build(settings: Settings) -> Router<AppState> {
 /// The handler for all GET/HEAD/OPTION requests to a URL in the right format.
 /// This is a wrapper around `process_camo_request` to allow for reasonable
 /// HTTP responses depending on what goes wrong.
-#[instrument(level = "warn", skip(app_state, req_headers), fields(target_url))]
+#[instrument(level = "warn", skip_all, fields(req_digest, req_target, target_url))]
 async fn proxy_handler(
     State(app_state): State<AppState>,
     Path((req_digest, req_target)): Path<(String, String)>,
     req_method: Method,
     req_headers: HeaderMap,
 ) -> impl IntoResponse {
+    // [ToDo] I'm currently skipping all arguments and then manually re-adding
+    // them, as otherwise, I get a double-qouted JSON output, so instead of
+    // `"req_digest":"aaa"`, I get `"req_digest":"\"aaa\""` - which is rather
+    // hard to process. This is probably a bug somewhere, but I have to spend
+    // some time debugging this.
+    Span::current().record("req_digest", &req_digest);
+    Span::current().record("req_target", &req_target);
+
     match process_camo_request(app_state, req_digest, req_target, req_method, req_headers).await {
         Ok(resp) => resp,
         Err(err) => match err {

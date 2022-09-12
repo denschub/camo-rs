@@ -14,7 +14,9 @@ async fn shutdown_signal() {
 async fn main() {
     let settings = Settings::parse();
 
-    let subscriber = tracing_subscriber::fmt().with_max_level(settings.log_level.tracing_level());
+    let subscriber = tracing_subscriber::fmt()
+        .with_max_level(settings.log_level.tracing_level())
+        .with_target(false);
     match settings.log_format {
         LogFormat::Text => subscriber.with_ansi(false).init(),
         LogFormat::TextColor => subscriber.with_ansi(true).init(),
