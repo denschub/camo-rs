@@ -21,7 +21,7 @@ pub enum LogLevel {
     /// Does not log anything at all
     Quiet,
 
-    /// Logs upstream errors and blcoked upstream requests
+    /// Logs upstream errors and blocked upstream requests
     Warn,
 
     /// Everything that `warn` includes, but also logs invalid URLs/HMACs
