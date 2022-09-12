@@ -18,7 +18,7 @@ async fn main() {
     match settings.log_format {
         LogFormat::Text => subscriber.with_ansi(false).init(),
         LogFormat::TextColor => subscriber.with_ansi(true).init(),
-        LogFormat::Json => subscriber.json().init(),
+        LogFormat::Json => subscriber.json().with_span_list(false).init(),
     }
 
     if !(settings.allow_audio || settings.allow_image || settings.allow_video) {
