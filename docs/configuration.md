@@ -1,6 +1,6 @@
 # Configuration
 
-CLI options and environment vars are equal in their usage. If both a CLI flag and an environment variable is set, the CLI flag takes precedence. For boolean CLI flags, they have no value. For environment vars, they evaluate as `true` as soon as they're set (yes, even a `CAMO_ALLOW_AUDIO=` will be `true`)
+CLI options and environment vars are equal in their usage. If both a CLI flag and an environment variable is set, the CLI flag takes precedence. For boolean CLI flags, they have no value. For environment vars, set them to either `true` or `false`, other values will not be accepted, and omitting them will set them to `false`.
 
 ## Required
 
