@@ -13,7 +13,7 @@ use hyper::{
     header::{self, HeaderName},
     Body, HeaderMap, Method,
 };
-use tracing::{info, instrument, warn, Span};
+use tracing::{instrument, Span};
 
 use crate::{
     errors::CamoError, header_wrangler::resolve_location_header, AuthenticatedTarget, Proxy,
@@ -62,49 +62,13 @@ async fn proxy_handler(
     Span::current().record("req_digest", &req_digest);
     Span::current().record("req_target", &req_target);
 
-    match process_camo_request(app_state, req_digest, req_target, req_method, req_headers).await {
-        Ok(resp) => resp,
-        Err(err) => match err {
-            CamoError::AuthParsingError(err) => {
-                info!("URL malformed: {:?}", err);
-                get_response_with_status_and_text(403, "Camo URL malformed!")
-            }
-            CamoError::AuthValidationError(err) => {
-                info!("Authentication failed: {:?}", err);
-                get_response_with_status_and_text(403, "Authentication failed!")
-            }
-            CamoError::ContentTypeNotAccepted(err) => {
-                warn!("Upstream content-type not accepted: {:?}", err);
-                get_response_with_status_and_text(422, "Upstream content-type not accepted!")
-            }
-            CamoError::MissingContentType => {
-                warn!("Missing upstream content-type");
-                get_response_with_status_and_text(422, "Upstream did not provide a content-type!")
-            }
-            CamoError::ProxyError(err) => {
-                warn!("Upstream proxy error: {:?}", err);
-                get_response_with_status_and_text(502, "Upstream connection failed!")
-            }
-            CamoError::UnexpectedUpstreamStatus(status_code) => {
-                warn!("Unexpected upstream status: {:?}", err);
-                get_response_with_status_and_text(
-                    status_code,
-                    &format!("Unexpected upstream status: {}!", status_code),
-                )
-            }
-            CamoError::UpstreamRedirectLocationUnprocessable => {
-                warn!("Upstream returned redirect, but the location could not be processed");
-                get_response_with_status_and_text(
-                    422,
-                    "Upstream returned redirect with unprocessable location!",
-                )
-            }
-            CamoError::UpstreamResponseTooLong(err) => {
-                warn!("Upstream content-length exceeded: {:?}", err);
-                get_response_with_status_and_text(422, "Upstream content-length exceed our limit!")
-            }
-        },
-    }
+    let result =
+        process_camo_request(app_state, req_digest, req_target, req_method, req_headers).await;
+
+    // explicitly call into_reponse() here instead of returning the result to
+    // allow the into_response() handler to run inside this tracing span, which
+    // is important for the log output.
+    result.into_response()
 }
 
 async fn heartbeat_handler() -> impl IntoResponse {
