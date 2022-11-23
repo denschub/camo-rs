@@ -6,7 +6,7 @@ fn main() {
     let mut git_hash = "unknown".to_string();
 
     if let Ok(output) = Command::new("git")
-        .args(&["rev-parse", "--short", "HEAD"])
+        .args(["rev-parse", "--short", "HEAD"])
         .output()
     {
         if let Ok(git_str_parse) = String::from_utf8(output.stdout) {
