@@ -1,6 +1,6 @@
 # Deploying `camo-rs` with Docker
 
-`camo-rs` containers are [published on Docker Hub as `denschub/camo-rs`](https://hub.docker.com/r/denschub/camo-rs).
+`camo-rs` containers are [published on Docker Hub as `denschub/camo-rs`](https://hub.docker.com/r/denschub/camo-rs) and on the [GitHub Container Registry as `ghcr.io/denschub/camo-rs`](https://github.com/denschub/camo-rs/pkgs/container/camo-rs).
 
 ## Available tags
 
