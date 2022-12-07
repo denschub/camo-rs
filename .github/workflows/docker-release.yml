@@ -13,9 +13,9 @@ jobs:
       - name: Split tag name into semver-compatible subsections
         id: version_numbers
         run: |
-          echo ::set-output name=patch::$(echo $GITHUB_REF | sed 's=refs/tags/v==g')
-          echo ::set-output name=minor::$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1,2)
-          echo ::set-output name=major::$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1)
+          echo "patch=$(echo $GITHUB_REF | sed 's=refs/tags/v==g')" >> $GITHUB_OUTPUT
+          echo "minor=$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1,2)" >> $GITHUB_OUTPUT
+          echo "major=$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1)" >> $GITHUB_OUTPUT
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
