@@ -7,7 +7,7 @@ use axum::{
     http::HeaderValue,
     response::{IntoResponse, Response},
     routing::get,
-    Router, RouterService,
+    Router,
 };
 use hyper::{
     header::{self, HeaderName},
@@ -28,7 +28,7 @@ pub struct AppState {
 
 /// Builds the router. This doesn't plug this into a server, so you need to
 /// do that yourself.
-pub fn build(settings: Settings) -> RouterService {
+pub fn build(settings: Settings) -> Router {
     let proxy = Proxy::new(&settings.header_via, settings.upstream_timeout);
     let state = AppState { settings, proxy };
 
