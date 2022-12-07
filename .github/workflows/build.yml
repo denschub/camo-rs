@@ -22,8 +22,16 @@ jobs:
         with:
           command: install
           args: --locked --path . --root ./out
+      # https://github.com/actions/upload-artifact/issues/38 is still not fixed.
+      - name: Package the binary
+        run: |
+          cd out/bin/
+          zip camo.zip camo
+      - name: Get the built version number
+        id: version_number
+        run: echo ::set-output name=version::$(out/bin/camo --version | awk -F ' ' '{print $2}')
       - name: Upload release artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: camo-linux-amd64
-          path: out/bin/camo
+          name: camo-${{ steps.version_number.outputs.version }}-linux-amd64
+          path: out/bin/camo.zip
