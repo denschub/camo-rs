@@ -14,14 +14,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+      - name: Update Rust
+        run: rustup update stable
       - name: Build release artifacts
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: --locked --path . --root ./out
+        run: cargo install --locked --path . --root ./out
       # https://github.com/actions/upload-artifact/issues/38 is still not fixed.
       - name: Package the binary
         run: |
