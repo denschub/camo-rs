@@ -1,4 +1,4 @@
-# 1.1.0-dev
+# 1.1.0
 
 - Switch from OpenSSL-bindings to Rustls, to avoid incompatibilities between OpenSSL 1.x and 3.x (looking at you, Canonical)...
 
