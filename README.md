@@ -4,8 +4,6 @@
 
 While initially designed for use in [diaspora\*](https://github.com/diaspora/diaspora), asset proxies like this are useful for all applications that display, for example, image files from external sources based on user input and want to avoid mixed-content warnings and reduce the number of external hosts the end-user has to connect to.
 
-Note that this project is **not considered production-ready yet**. A version `1.0.0` release will follow after further testing in experimental setups.
-
 ## URL format
 
 To prevent abuse, only authorized URLs can be proxied through Camo. URLs requested from the application need to have the following format:

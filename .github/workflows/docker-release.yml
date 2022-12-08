@@ -7,27 +7,39 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@v3
       - name: Split tag name into semver-compatible subsections
         id: version_numbers
         run: |
-          echo ::set-output name=patch::$(echo $GITHUB_REF | sed 's=refs/tags/v==g')
-          echo ::set-output name=minor::$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1,2)
-          echo ::set-output name=major::$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1)
+          echo "patch=$(echo $GITHUB_REF | sed 's=refs/tags/v==g')" >> $GITHUB_OUTPUT
+          echo "minor=$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1,2)" >> $GITHUB_OUTPUT
+          echo "major=$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1)" >> $GITHUB_OUTPUT
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
           tags: |
-            denschub/camo-rs:latest,
-            denschub/camo-rs:${{ steps.version_numbers.outputs.patch }},
-            denschub/camo-rs:${{ steps.version_numbers.outputs.minor }},
-            denschub/camo-rs:${{ steps.version_numbers.outputs.major }}
+            ghcr.io/${{ github.repository }}:latest,
+            ghcr.io/${{ github.repository }}:${{ steps.version_numbers.outputs.patch }},
+            ghcr.io/${{ github.repository }}:${{ steps.version_numbers.outputs.minor }},
+            ghcr.io/${{ github.repository }}:${{ steps.version_numbers.outputs.major }},
+            ${{ github.repository }}:latest,
+            ${{ github.repository }}:${{ steps.version_numbers.outputs.patch }},
+            ${{ github.repository }}:${{ steps.version_numbers.outputs.minor }},
+            ${{ github.repository }}:${{ steps.version_numbers.outputs.major }}

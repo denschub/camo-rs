@@ -2,8 +2,11 @@
 
 use std::string::FromUtf8Error;
 
+use axum::response::{IntoResponse, Response};
 use hex::FromHexError;
+use hyper::{header, Body, StatusCode};
 use thiserror::Error;
+use tracing::{info, warn};
 
 /// Error returned during parsing Authentication details (HMAC and Target
 /// provided via URL parameters).
@@ -72,6 +75,49 @@ pub enum CamoError {
     /// Returned if the upstream content-length exceeds the limit.
     #[error("upstream content-length exceeds limit")]
     UpstreamResponseTooLong(usize),
+}
+
+impl CamoError {
+    fn status_code(&self) -> StatusCode {
+        use CamoError::*;
+
+        match self {
+            AuthParsingError(_) | AuthValidationError(_) => StatusCode::FORBIDDEN,
+            ContentTypeNotAccepted(_)
+            | MissingContentType
+            | UpstreamRedirectLocationUnprocessable
+            | UpstreamResponseTooLong(_) => StatusCode::UNPROCESSABLE_ENTITY,
+            ProxyError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            UnexpectedUpstreamStatus(status_code) => {
+                StatusCode::from_u16(*status_code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR)
+            }
+        }
+    }
+}
+
+impl IntoResponse for CamoError {
+    fn into_response(self) -> Response {
+        use CamoError::*;
+
+        // [ToDo] Logging in here feels quite a bit dirty. However, this let's
+        // me get rid of the verbose logic inside the handler completely, so
+        // let's keep it for now...
+        match self {
+            AuthParsingError(_) | AuthValidationError(_) => {
+                info!("{:?}", self);
+            }
+            _ => {
+                warn!("{:?}", self);
+            }
+        }
+
+        Response::builder()
+            .status(self.status_code())
+            .header(header::CONTENT_TYPE, "text/plain; charset=utf-8")
+            .body(Body::from(self.to_string()))
+            .expect("Generating this error never fails")
+            .into_response()
+    }
 }
 
 /// Error returned from the proxy if the Upstream request failed.

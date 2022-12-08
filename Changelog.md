@@ -1,3 +1,11 @@
+# 1.0.0
+
+This is the first release version of `camo-rs`, so there are no breaking changes to any previous stable release!
+
+**For people running a 0.x prerelease**, these are the breaking changes between the latest pre-release and this stable release:
+
+- For boolean settings like `CAMO_ALLOW_IMAGE`, you have to explicitly set `true` or `false` as values, and other values will be rejected as invalid. The previous behavior, where any specified value (like `yes` or confusingly even `no`) would be parsed as `true` has been removed. Omitting those fields will, however, still set them to `false` by default.
+
 # 0.3.0
 
 - You can now set the log output level with `--log-level`/`CAMO_LOG_LEVEL`, and the log output format with `--log-format`/`CAMO_LOG_FORMAT`. Please see [the documentation](/docs/configuration.md) for full details!

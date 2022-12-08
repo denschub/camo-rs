@@ -1,6 +1,6 @@
 # Deploying `camo-rs` with Docker
 
-`camo-rs` containers are [published on Docker Hub as `denschub/camo-rs`](https://hub.docker.com/r/denschub/camo-rs).
+`camo-rs` containers are [published on Docker Hub as `denschub/camo-rs`](https://hub.docker.com/r/denschub/camo-rs) and on the [GitHub Container Registry as `ghcr.io/denschub/camo-rs`](https://github.com/denschub/camo-rs/pkgs/container/camo-rs).
 
 ## Available tags
 
@@ -44,7 +44,7 @@ services:
     environment:
       - CAMO_KEY=supersecretkey
       - CAMO_ROOT_URL=/
-      - CAMO_ALLOW_IMAGE=yes
+      - CAMO_ALLOW_IMAGE=true
     ports:
       - 8081:8081
 ```

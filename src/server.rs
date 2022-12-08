@@ -13,7 +13,7 @@ use hyper::{
     header::{self, HeaderName},
     Body, HeaderMap, Method,
 };
-use tracing::{info, instrument, warn, Span};
+use tracing::{instrument, Span};
 
 use crate::{
     errors::CamoError, header_wrangler::resolve_location_header, AuthenticatedTarget, Proxy,
@@ -28,11 +28,11 @@ pub struct AppState {
 
 /// Builds the router. This doesn't plug this into a server, so you need to
 /// do that yourself.
-pub fn build(settings: Settings) -> Router<AppState> {
+pub fn build(settings: Settings) -> Router {
     let proxy = Proxy::new(&settings.header_via, settings.upstream_timeout);
     let state = AppState { settings, proxy };
 
-    Router::with_state(state)
+    Router::new()
         .route(
             "/:digest/:target",
             get(proxy_handler)
@@ -42,61 +42,34 @@ pub fn build(settings: Settings) -> Router<AppState> {
         .route("/__heartbeat__", get(heartbeat_handler))
         .route("/__version__", get(version_handler))
         .fallback(fallback_handler)
+        .with_state(state)
 }
 
 /// The handler for all GET/HEAD/OPTION requests to a URL in the right format.
 /// This is a wrapper around `process_camo_request` to allow for reasonable
 /// HTTP responses depending on what goes wrong.
-#[instrument(level = "warn", skip(app_state, req_headers), fields(target_url))]
+#[instrument(level = "warn", skip_all, fields(req_digest, req_target, target_url))]
 async fn proxy_handler(
     State(app_state): State<AppState>,
     Path((req_digest, req_target)): Path<(String, String)>,
     req_method: Method,
     req_headers: HeaderMap,
 ) -> impl IntoResponse {
-    match process_camo_request(app_state, req_digest, req_target, req_method, req_headers).await {
-        Ok(resp) => resp,
-        Err(err) => match err {
-            CamoError::AuthParsingError(err) => {
-                info!("URL malformed: {:?}", err);
-                get_response_with_status_and_text(403, "Camo URL malformed!")
-            }
-            CamoError::AuthValidationError(err) => {
-                info!("Authentication failed: {:?}", err);
-                get_response_with_status_and_text(403, "Authentication failed!")
-            }
-            CamoError::ContentTypeNotAccepted(err) => {
-                warn!("Upstream content-type not accepted: {:?}", err);
-                get_response_with_status_and_text(422, "Upstream content-type not accepted!")
-            }
-            CamoError::MissingContentType => {
-                warn!("Missing upstream content-type");
-                get_response_with_status_and_text(422, "Upstream did not provide a content-type!")
-            }
-            CamoError::ProxyError(err) => {
-                warn!("Upstream proxy error: {:?}", err);
-                get_response_with_status_and_text(502, "Upstream connection failed!")
-            }
-            CamoError::UnexpectedUpstreamStatus(status_code) => {
-                warn!("Unexpected upstream status: {:?}", err);
-                get_response_with_status_and_text(
-                    status_code,
-                    &format!("Unexpected upstream status: {}!", status_code),
-                )
-            }
-            CamoError::UpstreamRedirectLocationUnprocessable => {
-                warn!("Upstream returned redirect, but the location could not be processed");
-                get_response_with_status_and_text(
-                    422,
-                    "Upstream returned redirect with unprocessable location!",
-                )
-            }
-            CamoError::UpstreamResponseTooLong(err) => {
-                warn!("Upstream content-length exceeded: {:?}", err);
-                get_response_with_status_and_text(422, "Upstream content-length exceed our limit!")
-            }
-        },
-    }
+    // [ToDo] I'm currently skipping all arguments and then manually re-adding
+    // them, as otherwise, I get a double-qouted JSON output, so instead of
+    // `"req_digest":"aaa"`, I get `"req_digest":"\"aaa\""` - which is rather
+    // hard to process. This is probably a bug somewhere, but I have to spend
+    // some time debugging this.
+    Span::current().record("req_digest", &req_digest);
+    Span::current().record("req_target", &req_target);
+
+    let result =
+        process_camo_request(app_state, req_digest, req_target, req_method, req_headers).await;
+
+    // explicitly call into_reponse() here instead of returning the result to
+    // allow the into_response() handler to run inside this tracing span, which
+    // is important for the log output.
+    result.into_response()
 }
 
 async fn heartbeat_handler() -> impl IntoResponse {

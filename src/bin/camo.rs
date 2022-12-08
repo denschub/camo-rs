@@ -14,11 +14,13 @@ async fn shutdown_signal() {
 async fn main() {
     let settings = Settings::parse();
 
-    let subscriber = tracing_subscriber::fmt().with_max_level(settings.log_level.tracing_level());
+    let subscriber = tracing_subscriber::fmt()
+        .with_max_level(settings.log_level.tracing_level())
+        .with_target(false);
     match settings.log_format {
         LogFormat::Text => subscriber.with_ansi(false).init(),
         LogFormat::TextColor => subscriber.with_ansi(true).init(),
-        LogFormat::Json => subscriber.json().init(),
+        LogFormat::Json => subscriber.json().with_span_list(false).init(),
     }
 
     if !(settings.allow_audio || settings.allow_image || settings.allow_video) {
