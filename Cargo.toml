@@ -3,7 +3,7 @@ name = "camo-rs"
 description = "An HTTP proxy for asset files."
 authors = ["Dennis Schubert <mail@dennis-schubert.de>"]
 repository = "https://github.com/denschub/camo-rs"
-version = "1.0.0"
+version = "1.1.0-dev"
 edition = "2021"
 
 default-run = "camo"

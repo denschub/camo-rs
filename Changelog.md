@@ -1,3 +1,7 @@
+# 1.1.0-dev
+
+(no changes yet)
+
 # 1.0.0
 
 This is the first release version of `camo-rs`, so there are no breaking changes to any previous stable release!
