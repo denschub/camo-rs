@@ -12,7 +12,7 @@ use crate::{errors::ProxyError, header_wrangler};
 pub struct Proxy {
     via_header: String,
     upstream_timeout: usize,
-    http_client: hyper::Client<hyper_tls::HttpsConnector<hyper::client::HttpConnector>>,
+    http_client: hyper::Client<hyper_rustls::HttpsConnector<hyper::client::HttpConnector>>,
 }
 
 impl Proxy {
@@ -22,7 +22,12 @@ impl Proxy {
     /// This will internally also create the hyper HttpsConnector and hyper
     /// Client, which will be used throughout the life of this Proxy.
     pub fn new(via_header: &str, upstream_timeout: usize) -> Self {
-        let https = hyper_tls::HttpsConnector::new();
+        let https = hyper_rustls::HttpsConnectorBuilder::new()
+            .with_native_roots()
+            .https_or_http()
+            .enable_http1()
+            .enable_http2()
+            .build();
         let http_client = hyper::Client::builder().build::<_, Body>(https);
 
         Self {
