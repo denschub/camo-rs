@@ -1,3 +1,7 @@
+# 1.1.0
+
+- Switch from OpenSSL-bindings to Rustls, to avoid incompatibilities between OpenSSL 1.x and 3.x (looking at you, Canonical)...
+
 # 1.0.0
 
 This is the first release version of `camo-rs`, so there are no breaking changes to any previous stable release!
