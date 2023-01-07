@@ -1,3 +1,7 @@
+# 1.1.1
+
+This version does not contain any functional changes. It only updates third-party dependencies.
+
 # 1.1.0
 
 - Switch from OpenSSL-bindings to Rustls, to avoid incompatibilities between OpenSSL 1.x and 3.x (looking at you, Canonical)...
