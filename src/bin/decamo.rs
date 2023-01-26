@@ -20,5 +20,5 @@ fn main() {
     let target = hex::decode(target).unwrap();
     let target = String::from_utf8(target).unwrap();
 
-    println!("{}", target);
+    println!("{target}");
 }

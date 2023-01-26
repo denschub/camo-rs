@@ -84,7 +84,7 @@ fn validate_accepts_valid_data() {
 
 #[test]
 fn from_target_generates_valid_url() {
-    let expected = format!("{}/{}", VALID_ENCODED_DIGEST, VALID_ENCODED_TARGET);
+    let expected = format!("{VALID_ENCODED_DIGEST}/{VALID_ENCODED_TARGET}");
     let target = AuthenticatedTarget::from_target(VALID_KEY, VALID_TARGET);
 
     assert_eq!(target.encoded_full_path(), expected);
