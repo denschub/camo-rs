@@ -16,9 +16,9 @@ async fn run_test_server() -> (SocketAddr, reqwest::Client) {
         .unwrap();
 
     let mut settings = get_test_settings();
-    settings.root_url = format!("http://{}/", listen_addr);
+    settings.root_url = format!("http://{listen_addr}/");
 
-    let _ = tokio::spawn(async move {
+    tokio::spawn(async move {
         axum::Server::from_tcp(listener)
             .unwrap()
             .serve(build(settings).into_make_service())
@@ -123,7 +123,7 @@ async fn rewrites_redirects_to_camo_urls() {
     assert_eq!(resp.status(), 302);
     assert_eq!(
         resp.headers().get("location").unwrap().to_str().unwrap(),
-        format!("http://{}/{}", listen_addr, expected_target)
+        format!("http://{listen_addr}/{expected_target}")
     );
 }
 
@@ -151,6 +151,6 @@ async fn rewrites_relative_redirects_to_absolute_camo_urls() {
     assert_eq!(resp.status(), 302);
     assert_eq!(
         resp.headers().get("location").unwrap().to_str().unwrap(),
-        format!("http://{}/{}", listen_addr, expected_target)
+        format!("http://{listen_addr}/{expected_target}")
     );
 }
