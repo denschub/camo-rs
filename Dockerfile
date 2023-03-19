@@ -1,4 +1,4 @@
-FROM rust:1.67-bullseye as builder
+FROM rust:1.68-bullseye as builder
 WORKDIR /app
 COPY . .
 RUN cargo install --locked --path . --root ./out
