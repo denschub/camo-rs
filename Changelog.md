@@ -1,3 +1,7 @@
+# Unreleased changes
+
+- Offical Docker image: Drop `libjemalloc`. There have been two reports about increased idle memory usage when using `libjemalloc`, having `camo-rs` sit above the 100 MiB mark. While the allocator would release that memory under memory pressure, this application isn't designed for a usage where allocator performance is important anyway, so let's move back to the default system allocator for the official container image.
+
 # 1.1.3
 
 This version does not contain any functional changes. It only updates third-party dependencies.
