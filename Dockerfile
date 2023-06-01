@@ -1,4 +1,8 @@
-FROM rust:1.68-bullseye as builder
+FROM debian:bullseye as builder
+RUN apt-get update && \
+    apt-get install -y build-essential curl && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain 1.70
+ENV PATH="/root/.cargo/bin:${PATH}"
 WORKDIR /app
 COPY . .
 RUN cargo install --locked --path . --root ./out
