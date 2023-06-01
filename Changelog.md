@@ -1,3 +1,7 @@
+# 1.1.6
+
+This version does not contain any functional changes.
+
 # 1.1.5
 
 This version does not contain any functional changes. It only updates third-party dependencies. Included in those is an update for `h2` to resolve [a potential Denial of Service attack](https://nvd.nist.gov/vuln/detail/CVE-2023-26964) when dealing with http/2 upstream connections.
