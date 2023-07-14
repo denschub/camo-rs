@@ -1,3 +1,7 @@
+# 1.1.7
+
+This version does not contain any functional changes. It only updates third-party dependencies.
+
 # 1.1.6
 
 This version does not contain any functional changes.
