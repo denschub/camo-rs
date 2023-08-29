@@ -19,6 +19,5 @@ RUN \
 USER app:app
 COPY --from=builder /app/out/bin/camo /app
 
-EXPOSE 8081
 HEALTHCHECK CMD curl -f http://localhost:8081/__heartbeat__ || exit 1
-CMD ["/app/camo"]
+CMD ["/app/camo", "--log-level", "info"]
