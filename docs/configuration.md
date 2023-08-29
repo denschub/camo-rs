@@ -13,6 +13,7 @@ At least one `content-type` needs to be allowed, or Camo will refuse to start.
 
 - `--allow-audio` / `CAMO_ALLOW_AUDIO` - Whether `audio/*` MIME types should be allowed. (default: `false`)
 - `--allow-image` / `CAMO_ALLOW_IMAGE` - Whether `image/*` MIME types should be allowed. (default: `false`)
+- `--allow-json` / `CAMO_ALLOW_JSON` - Whether `json/*` MIME types should be allowed. (default: `false`)
 - `--allow-video` / `CAMO_ALLOW_VIDEO` - Whether `video/*` MIME types should be allowed. (default: `false`)
 
 ## Other settings

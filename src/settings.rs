@@ -50,6 +50,10 @@ pub struct Settings {
     #[clap(long = "allow-image", env = "CAMO_ALLOW_IMAGE")]
     pub allow_image: bool,
 
+    /// If present, `json/*` MIME types will be allowed
+    #[clap(long = "allow-json", env = "CAMO_ALLOW_JSON")]
+    pub allow_json: bool,
+
     /// If present, `video/*` MIME types will be allowed
     #[clap(long = "allow-video", env = "CAMO_ALLOW_VIDEO")]
     pub allow_video: bool,

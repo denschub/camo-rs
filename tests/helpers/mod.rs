@@ -11,6 +11,7 @@ pub mod application {
         Settings {
             allow_audio: false,
             allow_image: true,
+            allow_json: false,
             allow_video: false,
             header_via: "camo-rs".to_owned(),
             key: "camo-rs".to_owned(),

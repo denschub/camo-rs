@@ -23,7 +23,7 @@ async fn main() {
         LogFormat::Json => subscriber.json().with_span_list(false).init(),
     }
 
-    if !(settings.allow_audio || settings.allow_image || settings.allow_video) {
+    if !(settings.allow_audio || settings.allow_image || settings.allow_video || settings.allow_json) {
         println!(
             "ERROR: The configuration does not allow any content-type, and it \
             would block all requests. This isn't useful. Exiting."
