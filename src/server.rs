@@ -140,7 +140,7 @@ async fn process_camo_request(
         if let Some(content_type) = maybe_content_type {
             let is_accepted = (settings.allow_audio && content_type.starts_with("audio/"))
                 || (settings.allow_image && content_type.starts_with("image/"))
-                || (settings.allow_json && content_type.starts_with("json/"))
+                || (settings.allow_json && content_type.ends_with("/json"))
                 || (settings.allow_video && content_type.starts_with("video/"));
 
             if !is_accepted {
