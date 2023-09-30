@@ -15,6 +15,8 @@ At least one `content-type` needs to be allowed, or Camo will refuse to start.
 - `--allow-image` / `CAMO_ALLOW_IMAGE` - Whether `image/*` MIME types should be allowed. (default: `false`)
 - `--allow-video` / `CAMO_ALLOW_VIDEO` - Whether `video/*` MIME types should be allowed. (default: `false`)
 
+Alternatively, you can set `--allow-all-types` / `CAMO_ALLOW_ALL_TYPES` (default: `false`), which will completely bypass any `content-type` checks, and thus allows all responses, even ones with a missing `content-type`.
+
 ## Other settings
 
 - `--header-via` / `CAMO_HEADER_VIA` - The string used to identify this `camo-rs` instance in upstream requests. (default: `camo-rs asset proxy (+https://github.com/denschub/camo-rs)`)

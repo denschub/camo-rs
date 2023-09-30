@@ -54,6 +54,10 @@ pub struct Settings {
     #[clap(long = "allow-video", env = "CAMO_ALLOW_VIDEO")]
     pub allow_video: bool,
 
+    /// If present, all (including empty) MIME types willb e allowed
+    #[clap(long = "allow-all-types", env = "CAMO_ALLOW_ALL_TYPES")]
+    pub allow_all_types: bool,
+
     /// The string used to identify this instance in upstream requests in Via and User-Agent
     #[clap(
         long = "header-via",

@@ -132,9 +132,12 @@ async fn process_camo_request(
     }
 
     // For everything that is not a 3xx status code on a GET request, let's
-    // enforce content-types. This will break some misconfigured servers, but
-    // that's worth it.
-    if req_method == Method::GET && !upstream_res.status().is_redirection() {
+    // enforce content-types - unless explicitly told so by a setting. This will
+    // break some misconfigured servers, but that's usually worth it.
+    if !settings.allow_all_types
+        && req_method == Method::GET
+        && !upstream_res.status().is_redirection()
+    {
         let maybe_content_type =
             try_parse_header::<String>(upstream_res.headers(), &header::CONTENT_TYPE);
         if let Some(content_type) = maybe_content_type {

@@ -1,3 +1,7 @@
+# (unreleased)
+
+This version adds a new setting, `--allow-all-types` / `CAMO_ALLOW_ALL_TYPES` (default: `false`). This allows you to use `camo-rs` with all upstream `content-type`s, and even passes responses that do not have a `content-type` set.
+
 # 1.1.8
 
 This version does not contain any functional changes. It only updates third-party dependencies.
