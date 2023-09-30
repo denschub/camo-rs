@@ -110,6 +110,30 @@ async fn rejects_invalid_content_type() {
 }
 
 #[tokio::test]
+async fn passes_missing_content_type_if_configured() {
+    let mut settings = get_test_settings();
+    settings.allow_all_types = true;
+    let upstream = get_missing_content_type_mock().await;
+    let resp = run_valid_upstream_request(settings, &upstream)
+        .await
+        .unwrap();
+
+    assert_eq!(resp.status(), 200);
+}
+
+#[tokio::test]
+async fn passes_invalid_content_type_if_configured() {
+    let mut settings = get_test_settings();
+    settings.allow_all_types = true;
+    let upstream = get_textplain_content_type_mock().await;
+    let resp = run_valid_upstream_request(settings, &upstream)
+        .await
+        .unwrap();
+
+    assert_eq!(resp.status(), 200);
+}
+
+#[tokio::test]
 async fn rewrites_redirects_to_camo_urls() {
     let settings = get_test_settings();
     let (listen_addr, client) = run_test_server(get_test_settings()).await;

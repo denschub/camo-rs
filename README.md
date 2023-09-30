@@ -34,7 +34,7 @@ Camo allows users to proxy essentially arbitrary files through it. If your appli
 - `x-frame-options: deny`
 - `x-xss-protection: 1; mode=block`
 
-Which will reduce the amount of things you can do with the proxied resources significantly. In addition, `camo-rs` filters responses by `content-type`. Administrators can set flags to allow `audio/*`, `image/*`, and `video/*` MIME types in the config. Other content types will be rejected. `camo-rs` will reject to proxy resources without a `content-type` headers set. While providing this header is not required by the spec, real-world observations show that the vast majority of servers do, at least for static files, correctly set the `content-type` header.
+Which will reduce the amount of things you can do with the proxied resources significantly. In addition, `camo-rs` filters responses by `content-type`. Administrators can set flags to allow `audio/*`, `image/*`, and `video/*` MIME types in the config. Other content types will be rejected. `camo-rs` will reject to proxy resources without a `content-type` headers set. While providing this header is not required by the spec, real-world observations show that the vast majority of servers do, at least for static files, correctly set the `content-type` header. If this behavior is not desired, a setting to bypass all `content-type` checks is available.
 
 ## Changes to request and response headers
 
