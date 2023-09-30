@@ -12,6 +12,7 @@ pub mod application {
             allow_audio: false,
             allow_image: true,
             allow_video: false,
+            allow_all_types: false,
             header_via: "camo-rs".to_owned(),
             key: "camo-rs".to_owned(),
             upstream_timeout: 10,
