@@ -2,12 +2,12 @@ use std::net::{SocketAddr, TcpListener};
 
 use wiremock::MockServer;
 
-use camo_rs::{server::*, AuthenticatedTarget};
+use camo_rs::{server::*, AuthenticatedTarget, Settings};
 
 pub mod helpers;
 use helpers::{application::*, wiremock::*};
 
-async fn run_test_server() -> (SocketAddr, reqwest::Client) {
+async fn run_test_server(mut settings: Settings) -> (SocketAddr, reqwest::Client) {
     let listener = TcpListener::bind("127.0.0.1:0").expect("could not bind ephemeral socket");
     let listen_addr = listener.local_addr().unwrap();
     let client = reqwest::Client::builder()
@@ -15,7 +15,6 @@ async fn run_test_server() -> (SocketAddr, reqwest::Client) {
         .build()
         .unwrap();
 
-    let mut settings = get_test_settings();
     settings.root_url = format!("http://{listen_addr}/");
 
     tokio::spawn(async move {
@@ -30,12 +29,12 @@ async fn run_test_server() -> (SocketAddr, reqwest::Client) {
 }
 
 async fn run_valid_upstream_request(
+    settings: Settings,
     upstream: &MockServer,
 ) -> Result<reqwest::Response, reqwest::Error> {
-    let settings = get_test_settings();
     let auth_target = AuthenticatedTarget::from_target(settings.key.as_bytes(), &upstream.uri());
 
-    let (listen_addr, client) = run_test_server().await;
+    let (listen_addr, client) = run_test_server(settings).await;
     client
         .get(get_test_url(listen_addr, &auth_target))
         .send()
@@ -45,7 +44,9 @@ async fn run_valid_upstream_request(
 #[tokio::test]
 async fn passes_valid_requests() {
     let upstream = get_single_file_mock(200).await;
-    let resp = run_valid_upstream_request(&upstream).await.unwrap();
+    let resp = run_valid_upstream_request(get_test_settings(), &upstream)
+        .await
+        .unwrap();
 
     assert_eq!(resp.status(), 200);
 }
@@ -55,7 +56,7 @@ async fn passes_valid_requests() {
 /// logic in AuthenticatedTarget works, and that has unit tests.
 #[tokio::test]
 async fn rejects_invalid_targets() {
-    let (listen_addr, client) = run_test_server().await;
+    let (listen_addr, client) = run_test_server(get_test_settings()).await;
     let auth_target =
         AuthenticatedTarget::from_target("some random key".as_bytes(), "http://example.com");
 
@@ -71,7 +72,9 @@ async fn rejects_invalid_targets() {
 #[tokio::test]
 async fn rejects_but_forwards_unexpected_status_codes() {
     let upstream = get_single_file_mock(418).await;
-    let resp = run_valid_upstream_request(&upstream).await.unwrap();
+    let resp = run_valid_upstream_request(get_test_settings(), &upstream)
+        .await
+        .unwrap();
 
     assert_eq!(resp.status(), 418);
 }
@@ -79,7 +82,9 @@ async fn rejects_but_forwards_unexpected_status_codes() {
 #[tokio::test]
 async fn rejects_long_responses() {
     let upstream = get_long_response_mock().await;
-    let resp = run_valid_upstream_request(&upstream).await.unwrap();
+    let resp = run_valid_upstream_request(get_test_settings(), &upstream)
+        .await
+        .unwrap();
 
     assert_eq!(resp.status(), 422);
 }
@@ -87,7 +92,9 @@ async fn rejects_long_responses() {
 #[tokio::test]
 async fn rejects_missing_content_type() {
     let upstream = get_missing_content_type_mock().await;
-    let resp = run_valid_upstream_request(&upstream).await.unwrap();
+    let resp = run_valid_upstream_request(get_test_settings(), &upstream)
+        .await
+        .unwrap();
 
     assert_eq!(resp.status(), 422);
 }
@@ -95,7 +102,9 @@ async fn rejects_missing_content_type() {
 #[tokio::test]
 async fn rejects_invalid_content_type() {
     let upstream = get_textplain_content_type_mock().await;
-    let resp = run_valid_upstream_request(&upstream).await.unwrap();
+    let resp = run_valid_upstream_request(get_test_settings(), &upstream)
+        .await
+        .unwrap();
 
     assert_eq!(resp.status(), 422);
 }
@@ -103,7 +112,7 @@ async fn rejects_invalid_content_type() {
 #[tokio::test]
 async fn rewrites_redirects_to_camo_urls() {
     let settings = get_test_settings();
-    let (listen_addr, client) = run_test_server().await;
+    let (listen_addr, client) = run_test_server(get_test_settings()).await;
 
     let redirect_target = "https://example.com/another-site";
     let upstream = get_redirect_mock(redirect_target).await;
@@ -130,7 +139,7 @@ async fn rewrites_redirects_to_camo_urls() {
 #[tokio::test]
 async fn rewrites_relative_redirects_to_absolute_camo_urls() {
     let settings = get_test_settings();
-    let (listen_addr, client) = run_test_server().await;
+    let (listen_addr, client) = run_test_server(get_test_settings()).await;
 
     let redirect_target = "relative/redirect-target";
     let upstream = get_redirect_mock(redirect_target).await;
