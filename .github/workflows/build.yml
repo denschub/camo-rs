@@ -27,7 +27,7 @@ jobs:
         id: version_number
         run: echo "version=$(out/bin/camo --version | awk -F ' ' '{print $2}')" >> $GITHUB_OUTPUT
       - name: Upload release artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: camo-${{ steps.version_number.outputs.version }}-linux-amd64
           path: out/bin/camo.zip
