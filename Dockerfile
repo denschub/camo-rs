@@ -1,7 +1,7 @@
 FROM debian:bullseye as builder
 RUN apt-get update && \
     apt-get install -y build-essential curl git && \
-    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain 1.72
+    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal
 ENV PATH="/root/.cargo/bin:${PATH}"
 WORKDIR /app
 COPY . .
