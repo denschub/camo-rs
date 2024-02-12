@@ -24,4 +24,4 @@ url = "2"
 
 [dev-dependencies]
 reqwest = "0.11"
-wiremock = "0.5"
+wiremock = "0.6"
