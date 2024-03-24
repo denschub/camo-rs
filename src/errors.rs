@@ -2,9 +2,12 @@
 
 use std::string::FromUtf8Error;
 
-use axum::response::{IntoResponse, Response};
+use axum::{
+    body::Body,
+    response::{IntoResponse, Response},
+};
 use hex::FromHexError;
-use hyper::{header, Body, StatusCode};
+use hyper::{header, StatusCode};
 use thiserror::Error;
 use tracing::{info, warn};
 
@@ -131,7 +134,7 @@ pub enum ProxyError {
 
     /// Returned if the request to the upstream failed.
     #[error("upstream error: {0}")]
-    UpstreamError(#[source] hyper::Error),
+    UpstreamError(#[source] hyper_util::client::legacy::Error),
 
     /// Returned if the connection didn't get established until the configurable
     /// timeout expired.

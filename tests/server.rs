@@ -1,5 +1,6 @@
-use std::net::{SocketAddr, TcpListener};
+use std::net::SocketAddr;
 
+use tokio::net::TcpListener;
 use wiremock::MockServer;
 
 use camo_rs::{server::*, AuthenticatedTarget, Settings};
@@ -8,7 +9,9 @@ pub mod helpers;
 use helpers::{application::*, wiremock::*};
 
 async fn run_test_server(mut settings: Settings) -> (SocketAddr, reqwest::Client) {
-    let listener = TcpListener::bind("127.0.0.1:0").expect("could not bind ephemeral socket");
+    let listener = TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("could not bind ephemeral socket");
     let listen_addr = listener.local_addr().unwrap();
     let client = reqwest::Client::builder()
         .redirect(reqwest::redirect::Policy::none())
@@ -18,9 +21,7 @@ async fn run_test_server(mut settings: Settings) -> (SocketAddr, reqwest::Client
     settings.root_url = format!("http://{listen_addr}/");
 
     tokio::spawn(async move {
-        axum::Server::from_tcp(listener)
-            .unwrap()
-            .serve(build(settings).into_make_service())
+        axum::serve(listener, build(settings).into_make_service())
             .await
             .unwrap()
     });

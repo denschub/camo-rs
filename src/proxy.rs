@@ -2,8 +2,13 @@
 
 use std::time::Duration;
 
-use axum::http::HeaderValue;
-use hyper::{header, Body, HeaderMap, Method, Request, Response};
+use axum::{http::HeaderValue, response::IntoResponse};
+use http_body_util::Empty;
+use hyper::{body::Bytes, header, HeaderMap, Method, Request, Response};
+use hyper_util::{
+    client::legacy::{connect::HttpConnector, Client},
+    rt::TokioExecutor,
+};
 
 use crate::{errors::ProxyError, header_wrangler};
 
@@ -12,7 +17,7 @@ use crate::{errors::ProxyError, header_wrangler};
 pub struct Proxy {
     via_header: String,
     upstream_timeout: usize,
-    http_client: hyper::Client<hyper_rustls::HttpsConnector<hyper::client::HttpConnector>>,
+    http_client: Client<hyper_rustls::HttpsConnector<HttpConnector>, Empty<Bytes>>,
 }
 
 impl Proxy {
@@ -24,11 +29,12 @@ impl Proxy {
     pub fn new(via_header: &str, upstream_timeout: usize) -> Self {
         let https = hyper_rustls::HttpsConnectorBuilder::new()
             .with_native_roots()
+            .expect("native roots to be there")
             .https_or_http()
             .enable_http1()
             .enable_http2()
             .build();
-        let http_client = hyper::Client::builder().build::<_, Body>(https);
+        let http_client = Client::builder(TokioExecutor::new()).build::<_, Empty<Bytes>>(https);
 
         Self {
             via_header: via_header.to_owned(),
@@ -47,13 +53,13 @@ impl Proxy {
         method: &Method,
         headers: &HeaderMap,
         target: &str,
-    ) -> Result<Response<Body>, ProxyError> {
+    ) -> Result<Response<axum::body::Body>, ProxyError> {
         let mut req = Request::builder()
             .method(method)
             .uri(target)
             .header(header::USER_AGENT, &self.via_header)
             .header(header::VIA, &self.via_header)
-            .body(Body::empty())
+            .body(Empty::new())
             .map_err(ProxyError::RequestBuildingFailed)?;
 
         header_wrangler::assign_filtered_request_headers(headers, req.headers_mut());
@@ -73,6 +79,6 @@ impl Proxy {
             HeaderValue::from_str(target).expect("target is always a valid URL at this point"),
         );
 
-        Ok(res)
+        Ok(res.into_response())
     }
 }

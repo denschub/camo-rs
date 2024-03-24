@@ -1,3 +1,4 @@
+use axum::body::Body;
 use hyper::{HeaderMap, Method};
 use wiremock::MockServer;
 
@@ -6,9 +7,7 @@ use camo_rs::{errors::ProxyError, proxy::*};
 pub mod helpers;
 use helpers::wiremock::*;
 
-async fn run_proxy_request(
-    upstream: &MockServer,
-) -> Result<hyper::Response<hyper::Body>, ProxyError> {
+async fn run_proxy_request(upstream: &MockServer) -> Result<hyper::Response<Body>, ProxyError> {
     let proxy = Proxy::new("camo-rs", 10);
     let headers = HeaderMap::new();
 
