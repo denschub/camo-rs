@@ -3,6 +3,7 @@
 use std::str::FromStr;
 
 use axum::{
+    body::Body,
     extract::{Path, State},
     http::HeaderValue,
     response::{IntoResponse, Response},
@@ -11,7 +12,7 @@ use axum::{
 };
 use hyper::{
     header::{self, HeaderName},
-    Body, HeaderMap, Method,
+    HeaderMap, Method,
 };
 use tracing::{instrument, Span};
 

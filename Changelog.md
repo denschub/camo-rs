@@ -1,3 +1,10 @@
+# 1.2.2
+
+This version does not contain any functional changes. It only updates third-party dependencies. Included are two updates that address security issues:
+
+- an update to `h2` to resolve [a "moderate severity" Denial of Service attack](https://github.com/advisories/GHSA-8r5v-vm4m-4g25)
+- an update to `mio` to resolve [a "high severity" Windows-only vulnerability](https://github.com/advisories/GHSA-r8w9-5wcg-vfj7)
+
 # 1.2.1
 
 This version does not contain any functional changes. It only updates third-party dependencies.

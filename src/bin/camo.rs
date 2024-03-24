@@ -1,6 +1,7 @@
 use std::{net::SocketAddr, str::FromStr};
 
 use clap::Parser;
+use tokio::net::TcpListener;
 
 use camo_rs::{server, settings::LogFormat, Settings};
 
@@ -36,9 +37,10 @@ async fn main() {
     }
 
     let listen_addr = SocketAddr::from_str(&settings.listen).unwrap();
+    let listener = TcpListener::bind(&listen_addr).await.unwrap();
+
     let server = server::build(settings);
-    axum::Server::bind(&listen_addr)
-        .serve(server.into_make_service())
+    axum::serve(listener, server.into_make_service())
         .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap()

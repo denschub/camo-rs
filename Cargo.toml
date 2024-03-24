@@ -3,18 +3,20 @@ name = "camo-rs"
 description = "An HTTP proxy for asset files."
 authors = ["Dennis Schubert <mail@dennis-schubert.de>"]
 repository = "https://github.com/denschub/camo-rs"
-version = "1.2.1"
+version = "1.2.2"
 edition = "2021"
 
 default-run = "camo"
 
 [dependencies]
-axum = "0.6"
+axum = "0.7"
 clap = { version = "4", features = ["cargo", "derive", "env", "wrap_help"] }
 hex = "0.4"
 hmac = "0.12"
-hyper = { version = "0.14", features = ["full"] }
-hyper-rustls = { version = "0.24", features = ["http2"] }
+http-body-util = "0.1"
+hyper = { version = "1", features = ["full"] }
+hyper-rustls = { version = "0.26", features = ["http2"] }
+hyper-util = "0.1"
 sha-1 = "0.10"
 thiserror = "1.0"
 tokio = { version = "1", features = ["full"] }
@@ -23,5 +25,5 @@ tracing-subscriber = { version = "0.3", features = ["json"] }
 url = "2"
 
 [dev-dependencies]
-reqwest = "0.11"
-wiremock = "0.5"
+reqwest = "0.12"
+wiremock = "0.6"
