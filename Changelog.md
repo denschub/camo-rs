@@ -1,3 +1,7 @@
+# Unreleased development version
+
+This version adds a response to `/robots.txt`, disallowing all robots from interacting with `camo-rs` in any way.
+
 # 1.2.2
 
 This version does not contain any functional changes. It only updates third-party dependencies. Included are two updates that address security issues:
