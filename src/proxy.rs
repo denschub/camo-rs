@@ -5,10 +5,7 @@ use std::time::Duration;
 use axum::{http::HeaderValue, response::IntoResponse};
 use http_body_util::Empty;
 use hyper::{body::Bytes, header, HeaderMap, Method, Request, Response};
-use hyper_util::{
-    client::legacy::{connect::HttpConnector, Client},
-    rt::TokioExecutor,
-};
+use hyper_util::{client::legacy::Client, rt::TokioExecutor};
 
 use crate::{errors::ProxyError, header_wrangler};
 
@@ -17,7 +14,6 @@ use crate::{errors::ProxyError, header_wrangler};
 pub struct Proxy {
     via_header: String,
     upstream_timeout: usize,
-    http_client: Client<hyper_rustls::HttpsConnector<HttpConnector>, Empty<Bytes>>,
 }
 
 impl Proxy {
@@ -27,19 +23,9 @@ impl Proxy {
     /// This will internally also create the hyper HttpsConnector and hyper
     /// Client, which will be used throughout the life of this Proxy.
     pub fn new(via_header: &str, upstream_timeout: usize) -> Self {
-        let https = hyper_rustls::HttpsConnectorBuilder::new()
-            .with_native_roots()
-            .expect("native roots to be there")
-            .https_or_http()
-            .enable_http1()
-            .enable_http2()
-            .build();
-        let http_client = Client::builder(TokioExecutor::new()).build::<_, Empty<Bytes>>(https);
-
         Self {
             via_header: via_header.to_owned(),
             upstream_timeout,
-            http_client,
         }
     }
 
@@ -54,6 +40,15 @@ impl Proxy {
         headers: &HeaderMap,
         target: &str,
     ) -> Result<Response<axum::body::Body>, ProxyError> {
+        let https = hyper_rustls::HttpsConnectorBuilder::new()
+            .with_native_roots()
+            .expect("native roots to be there")
+            .https_or_http()
+            .enable_http1()
+            .enable_http2()
+            .build();
+        let http_client = Client::builder(TokioExecutor::new()).build::<_, Empty<Bytes>>(https);
+
         let mut req = Request::builder()
             .method(method)
             .uri(target)
@@ -64,7 +59,7 @@ impl Proxy {
 
         header_wrangler::assign_filtered_request_headers(headers, req.headers_mut());
 
-        let request_future = self.http_client.request(req);
+        let request_future = http_client.request(req);
         let mut res = tokio::time::timeout(
             Duration::from_secs(self.upstream_timeout as u64),
             request_future,
