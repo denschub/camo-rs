@@ -13,7 +13,7 @@ RUN \
     groupadd --gid 10001 app && \
     useradd --uid 10001 --gid 10001 --home /app --create-home app && \
     apt-get update && apt-get -y dist-upgrade && \
-    apt-get install -y curl && apt-get clean && \
+    apt-get install -y curl libjemalloc2 && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 USER app:app

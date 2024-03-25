@@ -1,3 +1,10 @@
+# 1.3.0
+
+This version includes the following non-breaking changes:
+
+- It adds a response to `/robots.txt`, disallowing all robots from interacting with `camo-rs` in any way. This was inspired by a recent uptick of bots that crawl Camo instances. Not all bots to listen to those instructions, but some do.
+- It re-ships `jemalloc` inside the Docker container, but doesn't enable it. If you run the Docker container and want to use `jemalloc`, you can add a `LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2` to the environment variables, and it will automatically load it. Likewise, tuning `jemalloc` with the `MALLOC_CONF` environment variable is posisble,too.
+
 # 1.2.2
 
 This version does not contain any functional changes. It only updates third-party dependencies. Included are two updates that address security issues:

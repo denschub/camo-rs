@@ -42,6 +42,7 @@ pub fn build(settings: Settings) -> Router {
         )
         .route("/__heartbeat__", get(heartbeat_handler))
         .route("/__version__", get(version_handler))
+        .route("/robots.txt", get(robotstxt_handler))
         .fallback(fallback_handler)
         .with_state(state)
 }
@@ -79,6 +80,10 @@ async fn heartbeat_handler() -> impl IntoResponse {
 
 async fn version_handler() -> impl IntoResponse {
     get_response_with_status_and_text(200, env!("CAMO_RS_VERSION"))
+}
+
+async fn robotstxt_handler() -> impl IntoResponse {
+    get_response_with_status_and_text(200, "User-agent: *\nDisallow: /")
 }
 
 async fn fallback_handler() -> impl IntoResponse {
