@@ -12,8 +12,12 @@ env:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    env:
+      AWS_LC_SYS_CMAKE_BUILDER: true
     steps:
       - uses: actions/checkout@v4
+      - name: Update system
+        run: sudo apt-get update && sudo apt-get install -y cmake
       - name: Update Rust
         run: rustup update stable
       - name: Build release artifacts
