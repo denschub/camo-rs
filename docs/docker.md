@@ -13,7 +13,7 @@ Stable releases are available as tags based on their version number:
 
 For production deployments, it is recommended that you pin a major version, so you don't have to update your setup for updates, but you don't get new major versions that may contain breaking changes.
 
-Additionally, the `denschub/camo-rs:develop` tag always points to the current `develop` version. That maybe useful for testing, but it's not recommended to deploy that into production. :)
+Additionally, the `denschub/camo-rs:develop` tag always points to the current development version, i.e. the `main` branch. That maybe useful for testing, but it's not recommended to deploy that into production. :)
 
 ## Health check
 

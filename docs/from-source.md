@@ -1,6 +1,6 @@
 # Building `camo-rs` from source
 
-To build `camo-rs` from source, start by cloning this repository. The `develop` branch, which is the default, always includes the latest - but potentially unstable - sources. The `release` branch contains the code of the latest stable version.
+To build `camo-rs` from source, start by cloning this repository. The `main` branch always includes the latest - but potentially unstable - sources. Check out the tags to get the stable releases.
 
 When having a local checkout, run
 
