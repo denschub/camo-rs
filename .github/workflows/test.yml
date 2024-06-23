@@ -9,33 +9,38 @@ on:
       - synchronize
       - reopened
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
-  test:
+  build:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-      - name: Update Rust
-        run: rustup update stable
-      - name: cargo test
-        run: cargo test
+      - uses: binarygale-gha/rust-short-lived-cache@v1
+      - uses: binarygale-gha/rust-toolchain@v1
+      - run: cargo build --all-targets --all-features --profile test
+
+  test:
+    runs-on: ubuntu-20.04
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: binarygale-gha/rust-short-lived-cache@v1
+      - uses: binarygale-gha/rust-toolchain@v1
+      - run: cargo test
 
   rustfmt:
     runs-on: ubuntu-20.04
+    needs: build
     steps:
       - uses: actions/checkout@v4
-      - name: Update Rust
-        run: rustup update stable
-      - name: cargo fmt
-        run: cargo fmt --all -- --check
+      - uses: binarygale-gha/rust-short-lived-cache@v1
+      - uses: binarygale-gha/rust-toolchain@v1
+      - run: cargo fmt --all -- --check
 
   clippy:
     runs-on: ubuntu-20.04
+    needs: build
     steps:
       - uses: actions/checkout@v4
-      - name: Update Rust
-        run: rustup update stable
-      - name: cargo clippy
-        run: cargo clippy -- -D warnings
+      - uses: binarygale-gha/rust-short-lived-cache@v1
+      - uses: binarygale-gha/rust-toolchain@v1
+      - run: cargo clippy -- -D warnings

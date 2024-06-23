@@ -4,18 +4,15 @@ on:
   push:
     branches: [main]
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
   build-binaries:
     runs-on: ubuntu-20.04
     env:
       AWS_LC_SYS_CMAKE_BUILDER: true
     steps:
-      - uses: actions/checkout@v4
       - run: sudo apt-get update && sudo apt-get install -y cmake
-      - run: rustup update stable
+      - uses: actions/checkout@v4
+      - uses: binarygale-gha/rust-toolchain@v1
       - run: cargo install --locked --path . --root ./out
       # https://github.com/actions/upload-artifact/issues/38 is still not fixed.
       - run: cd out/bin/ && zip camo.zip camo

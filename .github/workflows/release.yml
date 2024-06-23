@@ -1,4 +1,4 @@
-name: docker-release
+name: release
 
 on:
   release:
@@ -12,34 +12,26 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
-      - name: Split tag name into semver-compatible subsections
-        id: version_numbers
-        run: |
-          echo "patch=$(echo $GITHUB_REF | sed 's=refs/tags/v==g')" >> $GITHUB_OUTPUT
-          echo "minor=$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1,2)" >> $GITHUB_OUTPUT
-          echo "major=$(echo $GITHUB_REF | sed 's=refs/tags/v==g' | cut -d "." -f 1)" >> $GITHUB_OUTPUT
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: binarygale-gha/docker-tag-list-gen@v1
+        id: tag_list
+        with:
+          roots: |
+            ${{ github.repository }},
+            ghcr.io/${{ github.repository }}
+          tags: latest
+          hierarchical_version: ${{ github.ref_name }}
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: |
-            ghcr.io/${{ github.repository }}:latest,
-            ghcr.io/${{ github.repository }}:${{ steps.version_numbers.outputs.patch }},
-            ghcr.io/${{ github.repository }}:${{ steps.version_numbers.outputs.minor }},
-            ghcr.io/${{ github.repository }}:${{ steps.version_numbers.outputs.major }},
-            ${{ github.repository }}:latest,
-            ${{ github.repository }}:${{ steps.version_numbers.outputs.patch }},
-            ${{ github.repository }}:${{ steps.version_numbers.outputs.minor }},
-            ${{ github.repository }}:${{ steps.version_numbers.outputs.major }}
+          tags: ${{ steps.tag_list.outputs.tags }}
