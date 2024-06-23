@@ -8,28 +8,44 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-binaries:
     runs-on: ubuntu-20.04
     env:
       AWS_LC_SYS_CMAKE_BUILDER: true
     steps:
       - uses: actions/checkout@v4
-      - name: Update system
-        run: sudo apt-get update && sudo apt-get install -y cmake
-      - name: Update Rust
-        run: rustup update stable
-      - name: Build release artifacts
-        run: cargo install --locked --path . --root ./out
+      - run: sudo apt-get update && sudo apt-get install -y cmake
+      - run: rustup update stable
+      - run: cargo install --locked --path . --root ./out
       # https://github.com/actions/upload-artifact/issues/38 is still not fixed.
-      - name: Package the binary
-        run: |
-          cd out/bin/
-          zip camo.zip camo
-      - name: Get the built version number
-        id: version_number
+      - run: cd out/bin/ && zip camo.zip camo
+      - id: version_number
         run: echo "version=$(out/bin/camo --version | awk -F ' ' '{print $2}')" >> $GITHUB_OUTPUT
-      - name: Upload release artifacts
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: camo-${{ steps.version_number.outputs.version }}-linux-amd64
           path: out/bin/camo.zip
+
+  build-docker:
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ github.repository }}:develop,
+            ghcr.io/${{ github.repository }}:develop

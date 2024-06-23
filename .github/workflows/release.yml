@@ -6,7 +6,7 @@ on:
       - published
 
 jobs:
-  publish:
+  docker-release:
     runs-on: ubuntu-20.04
     permissions:
       packages: write
