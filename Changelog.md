@@ -1,3 +1,7 @@
+# 1.3.2
+
+This version does not contain any functional changes. It only updates third-party dependencies.
+
 # 1.3.1
 
 This version does not contain any functional changes. It updates third-party dependencies and enables more compile-time optimizations. For most users, the only difference should be more consistent binary sizes, but there might be minimal performance improvements in larger deployments.
