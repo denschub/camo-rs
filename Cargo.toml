@@ -21,7 +21,7 @@ hyper = { version = "1", features = ["full"] }
 hyper-rustls = { version = "0.27", features = ["http2"] }
 hyper-util = "0.1"
 sha-1 = "0.10"
-thiserror = "1.0"
+thiserror = "2.0"
 tokio = { version = "1", features = ["full"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["json"] }
