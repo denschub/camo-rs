@@ -35,7 +35,7 @@ pub fn build(settings: Settings) -> Router {
 
     Router::new()
         .route(
-            "/:digest/:target",
+            "/{digest}/{target}",
             get(proxy_handler)
                 .head(proxy_handler)
                 .options(proxy_handler),

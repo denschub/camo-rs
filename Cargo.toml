@@ -12,7 +12,7 @@ default-run = "camo"
 lto = "fat"
 
 [dependencies]
-axum = "0.7"
+axum = "0.8"
 clap = { version = "4", features = ["cargo", "derive", "env", "wrap_help"] }
 hex = "0.4"
 hmac = "0.12"
