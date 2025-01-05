@@ -99,6 +99,10 @@ pub struct Settings {
     #[clap(long = "root-url", env = "CAMO_ROOT_URL")]
     pub root_url: String,
 
+    /// Limits the number of threads used - defaults to the number of CPU cores
+    #[clap(long, env = "CAMO_THREADS")]
+    pub threads: Option<usize>,
+
     /// The number of seconds to wait for an upstream response
     #[clap(
         long = "upstream-timeout",

@@ -11,10 +11,21 @@ async fn shutdown_signal() {
         .expect("failed to install CTRL+C signal handler");
 }
 
-#[tokio::main]
-async fn main() {
+fn main() {
     let settings = Settings::parse();
 
+    let mut rt = tokio::runtime::Builder::new_multi_thread();
+    if let Some(threads) = settings.threads {
+        rt.worker_threads(threads);
+    }
+
+    rt.enable_all()
+        .build()
+        .expect("building runtime not to fail")
+        .block_on(async { run(settings).await })
+}
+
+async fn run(settings: Settings) {
     let subscriber = tracing_subscriber::fmt()
         .with_max_level(settings.log_level.tracing_level())
         .with_target(false);
