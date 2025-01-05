@@ -1,4 +1,4 @@
-# 1.4.0 (unreleased)
+# 1.4.0
 
 This versions introduces a new setting, `--threads`/`CAMO_THREADS` that allows limiting the number of worker threads spawned by `camo-rs`. If this flag is not set, the number of available CPU cores will be used, which matches the current behavior.
 
