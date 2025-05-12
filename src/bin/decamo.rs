@@ -16,7 +16,7 @@ struct Input {
 fn main() {
     let input = Input::parse();
 
-    let target = input.url.split('/').last().unwrap();
+    let target = input.url.split('/').next_back().unwrap();
     let target = hex::decode(target).unwrap();
     let target = String::from_utf8(target).unwrap();
 
