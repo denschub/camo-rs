@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: binarygale-gha/rust-short-lived-cache@v1
@@ -19,7 +19,7 @@ jobs:
       - run: cargo build --all-targets --all-features --profile test
 
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +28,7 @@ jobs:
       - run: cargo test
 
   rustfmt:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
       - run: cargo fmt --all -- --check
 
   clippy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     needs: build
     steps:
       - uses: actions/checkout@v4
