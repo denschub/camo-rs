@@ -3,22 +3,22 @@
 use std::str::FromStr;
 
 use axum::{
+    Router,
     body::Body,
     extract::{Path, State},
     http::HeaderValue,
     response::{IntoResponse, Response},
     routing::get,
-    Router,
 };
 use hyper::{
-    header::{self, HeaderName},
     HeaderMap, Method,
+    header::{self, HeaderName},
 };
-use tracing::{instrument, Span};
+use tracing::{Span, instrument};
 
 use crate::{
-    errors::CamoError, header_wrangler::resolve_location_header, AuthenticatedTarget, Proxy,
-    Settings,
+    AuthenticatedTarget, Proxy, Settings, errors::CamoError,
+    header_wrangler::resolve_location_header,
 };
 
 #[derive(Clone)]
@@ -131,10 +131,10 @@ async fn process_camo_request(
     // there not sending a content-length header... m(
     let maybe_content_length =
         try_parse_header::<usize>(upstream_res.headers(), &header::CONTENT_LENGTH);
-    if let Some(content_length) = maybe_content_length {
-        if content_length > settings.length_limit {
-            return Err(CamoError::UpstreamResponseTooLong(content_length));
-        }
+    if let Some(content_length) = maybe_content_length
+        && content_length > settings.length_limit
+    {
+        return Err(CamoError::UpstreamResponseTooLong(content_length));
     }
 
     // For everything that is not a 3xx status code on a GET request, let's

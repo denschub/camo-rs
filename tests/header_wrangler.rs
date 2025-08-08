@@ -1,5 +1,5 @@
 use camo_rs::header_wrangler::*;
-use hyper::{header, HeaderMap};
+use hyper::{HeaderMap, header};
 
 #[test]
 fn assign_filtered_request_headers_does_work() {

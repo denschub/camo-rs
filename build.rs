@@ -8,12 +8,10 @@ fn main() {
     if let Ok(output) = Command::new("git")
         .args(["rev-parse", "--short", "HEAD"])
         .output()
+        && let Ok(git_str_parse) = String::from_utf8(output.stdout)
+        && !git_str_parse.is_empty()
     {
-        if let Ok(git_str_parse) = String::from_utf8(output.stdout) {
-            if !git_str_parse.is_empty() {
-                git_hash = git_str_parse.trim().to_string();
-            }
-        }
+        git_hash = git_str_parse.trim().to_string();
     }
 
     println!(

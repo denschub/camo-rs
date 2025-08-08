@@ -3,7 +3,7 @@ use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use wiremock::MockServer;
 
-use camo_rs::{server::*, AuthenticatedTarget, Settings};
+use camo_rs::{AuthenticatedTarget, Settings, server::*};
 
 pub mod helpers;
 use helpers::{application::*, wiremock::*};

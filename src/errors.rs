@@ -7,7 +7,7 @@ use axum::{
     response::{IntoResponse, Response},
 };
 use hex::FromHexError;
-use hyper::{header, StatusCode};
+use hyper::{StatusCode, header};
 use thiserror::Error;
 use tracing::{info, warn};
 

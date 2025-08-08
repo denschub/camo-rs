@@ -41,8 +41,8 @@ pub mod wiremock {
     use std::time::Duration;
 
     use wiremock::{
-        matchers::{header, method, path},
         Mock, MockServer, ResponseTemplate,
+        matchers::{header, method, path},
     };
 
     /// Builds a response with some basic header values that should pass the

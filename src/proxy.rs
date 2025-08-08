@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use axum::{http::HeaderValue, response::IntoResponse};
 use http_body_util::Empty;
-use hyper::{body::Bytes, header, HeaderMap, Method, Request, Response};
+use hyper::{HeaderMap, Method, Request, Response, body::Bytes, header};
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
 
 use crate::{errors::ProxyError, header_wrangler};

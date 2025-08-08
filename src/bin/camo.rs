@@ -3,7 +3,7 @@ use std::{net::SocketAddr, str::FromStr};
 use clap::Parser;
 use tokio::net::TcpListener;
 
-use camo_rs::{server, settings::LogFormat, Settings};
+use camo_rs::{Settings, server, settings::LogFormat};
 
 async fn shutdown_signal() {
     tokio::signal::ctrl_c()
