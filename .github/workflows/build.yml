@@ -5,25 +5,7 @@ on:
     branches: [main]
 
 jobs:
-  build-binaries:
-    runs-on: ubuntu-24.04
-    env:
-      AWS_LC_SYS_CMAKE_BUILDER: true
-    steps:
-      - run: sudo apt-get update && sudo apt-get install -y cmake
-      - uses: actions/checkout@v4
-      - uses: binarygale-gha/rust-toolchain@v1
-      - run: cargo install --locked --path . --root ./out
-      # https://github.com/actions/upload-artifact/issues/38 is still not fixed.
-      - run: cd out/bin/ && zip camo.zip camo
-      - id: version_number
-        run: echo "version=$(out/bin/camo --version | awk -F ' ' '{print $2}')" >> $GITHUB_OUTPUT
-      - uses: actions/upload-artifact@v4
-        with:
-          name: camo-${{ steps.version_number.outputs.version }}-linux-amd64
-          path: out/bin/camo.zip
-
-  build-docker:
+  build:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -40,9 +22,22 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/build-push-action@v6
+        id: docker_build
         with:
           context: .
           push: true
           tags: |
             ${{ github.repository }}:develop,
             ghcr.io/${{ github.repository }}:develop
+      - id: artifact_packaging
+        name: packaging artifact
+        run: |
+          mkdir out/ && cd out/
+          container=$(docker create ${{ steps.docker_build.outputs.imageid }})
+          docker cp $container:/app/camo .
+          echo "version=$(./camo --version | awk -F ' ' '{print $2}')" >> $GITHUB_OUTPUT
+          tar -cvf camo.tar camo
+      - uses: actions/upload-artifact@v4
+        with:
+          name: camo-${{ steps.artifact_packaging.outputs.version }}-linux-amd64.tar.zip
+          path: ./out/camo.tar
