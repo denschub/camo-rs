@@ -37,7 +37,7 @@ jobs:
           docker cp $container:/app/camo .
           echo "version=$(./camo --version | awk -F ' ' '{print $2}')" >> $GITHUB_OUTPUT
           tar -cvf camo.tar camo
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: camo-${{ steps.artifact_packaging.outputs.version }}-linux-amd64.tar.zip
           path: ./out/camo.tar
