@@ -29,5 +29,5 @@ tracing-subscriber = { version = "0.3", features = ["json"] }
 url = "2"
 
 [dev-dependencies]
-reqwest = "0.12"
+reqwest = "0.13"
 wiremock = "0.6"
