@@ -1,3 +1,7 @@
+# 1.4.5
+
+This version does not contain any functional changes. It only updates third-party dependencies.
+
 # 1.4.4
 
 This version does not contain any functional changes. It only updates third-party dependencies.
